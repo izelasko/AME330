@@ -1,45 +1,46 @@
-#define LED_PIN 8
-#define LED_PINB 9 
-#define BUTTON_PIN 7
+// This code was partially sourced from another author. The author posted the code on The Robotics Back End. The URL to the original code and affiliated information is https://roboticsbackend.com/arduino-turn-led-on-and-off-with-button/ 
+// This code has been modified to include two LEDs instead of one, with one turning on when the other is off. The requirements did not ask about this in specific. 
+// All comments made were created myself, by Bella Zelasko.
+
+#define LED_PIN 8 // for the green LED
+#define LED_PINB 9 // for the red LED
+#define BUTTON_PIN 7 // for the push button 
 
 byte lastButtonState = LOW;
 byte ledState = LOW;
 byte ledStateB = HIGH;
 
-unsigned long debounceDuration = 20; // millis
+unsigned long debounceDuration = 20; // millis, this makes it less likely for the button press to happen too quickly for the board to register in a row
 unsigned long lastTimeButtonStateChanged = 0;
 
 void setup() {
-  Serial.begin(9600);
-  pinMode(LED_PINB, OUTPUT);
+  Serial.begin(9600); // setting up serial communication
+  pinMode(LED_PINB, OUTPUT); // tells board that the pin is an output instead of an input
   pinMode(LED_PIN, OUTPUT);
   pinMode(BUTTON_PIN, INPUT);
 }
 
 void loop() {
   if (millis() - lastTimeButtonStateChanged > debounceDuration) {
-    byte buttonState = digitalRead(BUTTON_PIN);
-    if (buttonState != lastButtonState) {
+    byte buttonState = digitalRead(BUTTON_PIN); // reads the state of the push button 
+    if (buttonState != lastButtonState) { //if something has changed, then...
       lastTimeButtonStateChanged = millis();
       lastButtonState = buttonState;
       if (buttonState == LOW) {
         if (ledState == HIGH){
           ledState = LOW;
           ledStateB = HIGH;
-          digitalWrite(LED_PIN, ledState);
-          digitalWrite(LED_PINB, ledStateB);
+          digitalWrite(LED_PIN, ledState); // tells LED its behavior if ledState == HIGH
+          digitalWrite(LED_PINB, ledStateB); 
         }
 
         else{
           ledState = HIGH;
           ledStateB = LOW;
-          digitalWrite(LED_PIN, ledState);
+          digitalWrite(LED_PIN, ledState); // tells LED its behavior if ledState != HIGH
           digitalWrite(LED_PINB, ledStateB);
         } 
 
-
-        //digitalWrite(LED_PIN, ledState);
-        //digitalWrite(LED_PINB, ledStateB);
       }
     }
   }

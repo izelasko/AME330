@@ -1,0 +1,46 @@
+#define LED_PIN 8
+#define LED_PINB 9 
+#define BUTTON_PIN 7
+
+byte lastButtonState = LOW;
+byte ledState = LOW;
+byte ledStateB = HIGH;
+
+unsigned long debounceDuration = 20; // millis
+unsigned long lastTimeButtonStateChanged = 0;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(LED_PINB, OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(BUTTON_PIN, INPUT);
+}
+
+void loop() {
+  if (millis() - lastTimeButtonStateChanged > debounceDuration) {
+    byte buttonState = digitalRead(BUTTON_PIN);
+    if (buttonState != lastButtonState) {
+      lastTimeButtonStateChanged = millis();
+      lastButtonState = buttonState;
+      if (buttonState == LOW) {
+        if (ledState == HIGH){
+          ledState = LOW;
+          ledStateB = HIGH;
+          digitalWrite(LED_PIN, ledState);
+          digitalWrite(LED_PINB, ledStateB);
+        }
+
+        else{
+          ledState = HIGH;
+          ledStateB = LOW;
+          digitalWrite(LED_PIN, ledState);
+          digitalWrite(LED_PINB, ledStateB);
+        } 
+
+
+        //digitalWrite(LED_PIN, ledState);
+        //digitalWrite(LED_PINB, ledStateB);
+      }
+    }
+  }
+}
